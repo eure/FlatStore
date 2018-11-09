@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+<<<<<<< HEAD
+=======
 		4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07224821960A88009B815F /* FlatStoreTests.swift */; };
+>>>>>>> Init
 		4B24C544219600B000932155 /* FlatStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B24C53A219600B000932155 /* FlatStore.framework */; };
 		4B24C54B219600B000932155 /* FlatStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B24C53D219600B000932155 /* FlatStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4B24C5572196021200932155 /* FlatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5542196021100932155 /* FlatStore.swift */; };
 		4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5552196021100932155 /* FlatBatchUpdate.swift */; };
 		4B24C5592196021300932155 /* FlatRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5562196021200932155 /* FlatRef.swift */; };
+<<<<<<< HEAD
+		4B24C55B2196022000932155 /* FlatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C55A2196022000932155 /* FlatStoreTests.swift */; };
+=======
+>>>>>>> Init
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,7 +33,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+<<<<<<< HEAD
+=======
 		4B07224821960A88009B815F /* FlatStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatStoreTests.swift; sourceTree = "<group>"; };
+>>>>>>> Init
 		4B24C53A219600B000932155 /* FlatStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlatStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B24C53D219600B000932155 /* FlatStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlatStore.h; sourceTree = "<group>"; };
 		4B24C53E219600B000932155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -35,6 +45,10 @@
 		4B24C5542196021100932155 /* FlatStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatStore.swift; sourceTree = "<group>"; };
 		4B24C5552196021100932155 /* FlatBatchUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBatchUpdate.swift; sourceTree = "<group>"; };
 		4B24C5562196021200932155 /* FlatRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatRef.swift; sourceTree = "<group>"; };
+<<<<<<< HEAD
+		4B24C55A2196022000932155 /* FlatStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatStoreTests.swift; path = "../../../.ghq/github.com/eure/pairs-gl-ios/worktree/space6/Tests/FlatStoreTests/FlatStoreTests.swift"; sourceTree = "<group>"; };
+=======
+>>>>>>> Init
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,7 +103,11 @@
 		4B24C547219600B000932155 /* FlatStoreTests */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
+				4B24C55A2196022000932155 /* FlatStoreTests.swift */,
+=======
 				4B07224821960A88009B815F /* FlatStoreTests.swift */,
+>>>>>>> Init
 				4B24C54A219600B000932155 /* Info.plist */,
 			);
 			path = FlatStoreTests;
@@ -161,6 +179,10 @@
 					};
 					4B24C542219600B000932155 = {
 						CreatedOnToolsVersion = 10.1;
+<<<<<<< HEAD
+=======
+						LastSwiftMigration = 1010;
+>>>>>>> Init
 					};
 				};
 			};
@@ -214,7 +236,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< HEAD
+				4B24C55B2196022000932155 /* FlatStoreTests.swift in Sources */,
+=======
 				4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */,
+>>>>>>> Init
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +397,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.eure.FlatStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -397,6 +424,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.eure.FlatStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -406,7 +434,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+<<<<<<< HEAD
+=======
 				CLANG_ENABLE_MODULES = YES;
+>>>>>>> Init
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FlatStoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -416,6 +447,11 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = jp.eure.FlatStoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+<<<<<<< HEAD
+=======
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+>>>>>>> Init
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -425,7 +461,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+<<<<<<< HEAD
+=======
 				CLANG_ENABLE_MODULES = YES;
+>>>>>>> Init
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FlatStoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -435,6 +474,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = jp.eure.FlatStoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+<<<<<<< HEAD
+=======
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+>>>>>>> Init
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
