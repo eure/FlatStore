@@ -42,6 +42,13 @@ class FlatStoreTests: XCTestCase {
     var body: String = ""
   }
 
+  struct Post : Identifiable, Equatable {
+
+    var rawID: String
+
+    var body: String = ""
+  }
+
   override func setUp() {
     // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -63,6 +70,18 @@ class FlatStoreTests: XCTestCase {
 
     for i in 0..<10000 {
       storeA.set(value: Comment(rawID: "C-\(i)", userID: c.id, body: "\(i)"))
+    }
+
+    for i in 0..<10000 {
+      storeA.set(value: Post(rawID: "A-\(i)", body: "\(i)"))
+    }
+
+    for i in 0..<10000 {
+      storeA.set(value: Post(rawID: "B-\(i)", body: "\(i)"))
+    }
+
+    for i in 0..<10000 {
+      storeA.set(value: Post(rawID: "C-\(i)", body: "\(i)"))
     }
 
   }
@@ -166,7 +185,7 @@ class FlatStoreTests: XCTestCase {
   func testPerformanceExample() {
     // This is an example of a performance test case.
     self.measure {
-      for i in 0..<1000 {
+      for i in 0..<10000 {
         _ = storeA.get(by: Identifier<Comment>("A-\(i)"))
       }
     }
