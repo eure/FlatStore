@@ -96,9 +96,9 @@ extension Identifiable {
   }
 }
 
-public final class FlatStore {
+open class FlatStore {
 
-  var storage: [AnyIdentifier : Any] = [:]
+  final var storage: [AnyIdentifier : Any] = [:]
 
   private let notificationCenter: NotificationCenter = .init()
 
@@ -113,7 +113,7 @@ public final class FlatStore {
   }
 
   @inline(__always)
-  private func makeSeparatedNotificationName(_ name: Notification.Name) -> Notification.Name {
+  private final func makeSeparatedNotificationName(_ name: Notification.Name) -> Notification.Name {
     return .init(rawValue: "\(storeIdentifier)|\(name.rawValue)")
   }
   
