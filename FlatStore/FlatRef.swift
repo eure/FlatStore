@@ -38,14 +38,14 @@ open class FlatRef<Element : Identifiable> : Hashable {
     hasher.combine(identifier)
   }
 
-  private var lock = os_unfair_lock_s()
+  private let lock = UnfairLock()
 
   public weak var store: FlatStore?
 
   public let identifier: Identifier<Element>
 
   public var value: Element? {
-    os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
+    lock.lock(); defer { lock.unlock() }
     return cached ?? store?.get(by: identifier)
   }
 
@@ -65,9 +65,9 @@ open class FlatRef<Element : Identifiable> : Hashable {
     self.cached = cached
     token = observe { [weak self] (update) in
       guard let self = self else { return }
-      os_unfair_lock_lock(&self.lock)
+      self.lock.lock()
       self.cached = update.value
-      os_unfair_lock_unlock(&self.lock)
+      self.lock.unlock()
     }
   }
 
@@ -101,14 +101,14 @@ open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable
     hasher.combine(identifier)
   }
 
-  private var lock = os_unfair_lock_s()
+  private let lock = UnfairLock()
 
   public weak var store: FlatStore?
 
   public let identifier: Identifier<Element>
 
   public var cached: Element {
-    os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
+    lock.lock(); defer { lock.unlock() }
     return _cached
   }
 
@@ -135,9 +135,9 @@ open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable
         return
       }
       self.isDeleted = false
-      os_unfair_lock_lock(&self.lock)
+      self.lock.lock()
       self._cached = value
-      os_unfair_lock_unlock(&self.lock)
+      self.lock.unlock()
     }
   }
 
