@@ -221,6 +221,14 @@ extension FlatStore {
     return refs
   }
 
+  public func makeCachingRefs<S : Sequence, T : Identifiable>(from values: S) -> [CachingFlatRef<T>] where S.Element == T {
+    let values = get(by: values.map { $0.id })
+    let refs = values.map {
+      CachingFlatRef.init(key: $0.id, in: self, cached: $0)
+    }
+    return refs
+  }
+
 }
 
 /// Observing
