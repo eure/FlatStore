@@ -60,31 +60,27 @@ class FlatStoreTests: XCTestCase {
     storeA.set(value: b)
     storeA.set(value: c)
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Comment(rawID: "A-\(i)", userID: a.id, body: "\(i)"))
     }
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
-      storeA.set(value: Comment(rawID: "A-\(i)", userID: a.id, body: "\(i)"))
-    }
-
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Comment(rawID: "B-\(i)", userID: b.id, body: "\(i)"))
     }
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Comment(rawID: "C-\(i)", userID: c.id, body: "\(i)"))
     }
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Post(rawID: "A-\(i)", body: "\(i)"))
     }
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Post(rawID: "B-\(i)", body: "\(i)"))
     }
 
-    DispatchQueue.concurrentPerform(iterations: 10000) { (i) in
+    for i in 0..<10000 {
       storeA.set(value: Post(rawID: "C-\(i)", body: "\(i)"))
     }
 
@@ -193,29 +189,6 @@ class FlatStoreTests: XCTestCase {
         _ = storeA.get(by: Identifier<Comment>("A-\(i)"))
       }
     }
-  }
-
-  func testConcurrentAccess() {
-
-    let exp = XCTestExpectation(description: "Receive Notification")
-
-    let queue = DispatchQueue.init(label: "test", qos: .default, attributes: .concurrent)
-    for i in 0..<100 {
-      queue.async {
-        for x in 0..<100 {
-          queue.async {
-            _ = self.storeA.get(by: Identifier<Comment>("A-\(x)"))
-          }
-        }
-        _ = self.storeA.get(by: Identifier<Comment>("A-\(i)"))
-      }
-    }
-
-    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-      exp.fulfill()
-    }
-
-    wait(for: [exp], timeout: 10)
   }
 
 }

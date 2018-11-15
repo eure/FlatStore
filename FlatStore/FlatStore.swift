@@ -106,7 +106,7 @@ open class FlatStore {
 
   private let notificationQueue = OperationQueue()
 
-  private let lock = UnfairLock()
+  private let lock = NSRecursiveLock()
 
   public init() {
     notificationQueue.maxConcurrentOperationCount = 1    
