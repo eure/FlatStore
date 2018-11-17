@@ -27,7 +27,7 @@ public struct AnyIdentifier : Hashable {
   public let raw: AnyHashable
   public let notificationName: Notification.Name
 
-  init(typeName: String, rawID: AnyHashable) {
+  public init(typeName: String, rawID: AnyHashable) {
     self.typeName = typeName
     self.raw = rawID
     self.notificationName = .init(rawValue: "\(typeName)|\(rawID)")

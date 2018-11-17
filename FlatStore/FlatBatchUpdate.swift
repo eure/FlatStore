@@ -21,6 +21,7 @@
 
 import Foundation
 
+/// A transaction batch updating
 public final class FlatBatchUpdatesContext {
 
 //  private let store: FlatStore
@@ -48,7 +49,13 @@ public final class FlatBatchUpdatesContext {
   }
 
   public func get<T: Identifiable>(by key: Identifier<T>) -> T? {
-    return (buffer[key.asAny] as? T) ?? store.get(by: key)
+    if let transientObject = (buffer[key.asAny] as? T) {
+      return transientObject
+    }
+    if let object = store.get(by: key) {
+      return object
+    }
+    return nil
   }
 
 }
