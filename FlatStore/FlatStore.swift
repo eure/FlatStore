@@ -35,7 +35,7 @@ public struct AnyIdentifier : Hashable {
 
 }
 
-public struct Identifier<T : Identifiable> : Hashable {
+public struct Identifier<T : Identifiable> : Hashable, CustomStringConvertible {
 
   public static func == <T>(lhs: Identifier<T>, rhs: Identifier<T>) -> Bool {
     return lhs.raw == rhs.raw
@@ -53,6 +53,9 @@ public struct Identifier<T : Identifiable> : Hashable {
     self.asAny = AnyIdentifier(typeName: String.init(reflecting: T.self), rawID: .init(raw))
   }
 
+  public var description: String {
+    return "\(T.self).\(raw)"
+  }
 }
 
 public protocol NotificationTokenType : class {
