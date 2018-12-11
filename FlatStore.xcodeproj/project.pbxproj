@@ -13,6 +13,8 @@
 		4B24C5572196021200932155 /* FlatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5542196021100932155 /* FlatStore.swift */; };
 		4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5552196021100932155 /* FlatBatchUpdate.swift */; };
 		4B24C5592196021300932155 /* FlatRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5562196021200932155 /* FlatRef.swift */; };
+		4B3D4CB721BFAE6B00FB7A7E /* NestedBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D4CB621BFAE6B00FB7A7E /* NestedBuffer.swift */; };
+		4B3D4CB921BFB8BC00FB7A7E /* NestedBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D4CB821BFB8BC00FB7A7E /* NestedBufferTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,8 @@
 		4B24C5542196021100932155 /* FlatStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatStore.swift; sourceTree = "<group>"; };
 		4B24C5552196021100932155 /* FlatBatchUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBatchUpdate.swift; sourceTree = "<group>"; };
 		4B24C5562196021200932155 /* FlatRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatRef.swift; sourceTree = "<group>"; };
+		4B3D4CB621BFAE6B00FB7A7E /* NestedBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedBuffer.swift; sourceTree = "<group>"; };
+		4B3D4CB821BFB8BC00FB7A7E /* NestedBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedBufferTests.swift; sourceTree = "<group>"; };
 		4BF9E4BA21A0202A006AE786 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
@@ -83,6 +87,7 @@
 				4B24C5552196021100932155 /* FlatBatchUpdate.swift */,
 				4B24C5562196021200932155 /* FlatRef.swift */,
 				4B24C5542196021100932155 /* FlatStore.swift */,
+				4B3D4CB621BFAE6B00FB7A7E /* NestedBuffer.swift */,
 				4B24C53E219600B000932155 /* Info.plist */,
 			);
 			path = FlatStore;
@@ -92,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				4B07224821960A88009B815F /* FlatStoreTests.swift */,
+				4B3D4CB821BFB8BC00FB7A7E /* NestedBufferTests.swift */,
 				4B24C54A219600B000932155 /* Info.plist */,
 			);
 			path = FlatStoreTests;
@@ -208,6 +214,7 @@
 			files = (
 				4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */,
 				4B24C5592196021300932155 /* FlatRef.swift in Sources */,
+				4B3D4CB721BFAE6B00FB7A7E /* NestedBuffer.swift in Sources */,
 				4B24C5572196021200932155 /* FlatStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B3D4CB921BFB8BC00FB7A7E /* NestedBufferTests.swift in Sources */,
 				4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

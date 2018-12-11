@@ -26,7 +26,8 @@ public final class FlatBatchUpdatesContext {
 
 //  private let store: FlatStore
 
-  var buffer: [AnyIdentifier : Any] = [:]
+  var buffer: NestedBuffer = .init()
+
   private let store: FlatStore
 
   public init(store: FlatStore) {
@@ -35,7 +36,7 @@ public final class FlatBatchUpdatesContext {
 
   public func set<T: Identifiable>(value: T) -> Identifier<T> {
     let key = value.id
-    buffer[key.asAny] = value
+    buffer.set(object: value, for: key)
     return key
   }
 
@@ -43,13 +44,13 @@ public final class FlatBatchUpdatesContext {
     return
       values.map { value -> Identifier<T.Element> in
         let key = value.id
-        buffer[key.asAny] = value
+        buffer.set(object: value, for: key)
         return key
     }
   }
 
   public func get<T: Identifiable>(by key: Identifier<T>) -> T? {
-    if let transientObject = (buffer[key.asAny] as? T) {
+    if let transientObject = (buffer.object(for: key) as? T) {
       return transientObject
     }
     if let object = store.get(by: key) {

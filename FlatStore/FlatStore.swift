@@ -21,7 +21,15 @@
 
 import Foundation
 
-public struct AnyIdentifier : Hashable {
+public struct AnyIdentifier : Hashable, NestedBufferKey {
+
+  var firstKey: AnyHashable {
+    return .init(typeName)
+  }
+
+  var secondKey: AnyHashable {
+    return raw
+  }
 
   public let typeName: String
   public let raw: AnyHashable
@@ -35,22 +43,34 @@ public struct AnyIdentifier : Hashable {
 
 }
 
-public struct Identifier<T : Identifiable> : Hashable {
+public struct Identifier<T : Identifiable> : Hashable, NestedBufferKey {
 
   public static func == <T>(lhs: Identifier<T>, rhs: Identifier<T>) -> Bool {
     return lhs.raw == rhs.raw
+  }
+
+  var firstKey: AnyHashable {
+    return typeName
+  }
+
+  var secondKey: AnyHashable {
+    return raw
   }
 
   public var notificationName: Notification.Name {
     return asAny.notificationName
   }
 
-  public let asAny: AnyIdentifier
+  public var asAny: AnyIdentifier {
+    return AnyIdentifier(typeName: typeName, rawID: .init(raw))
+  }
+
   public let raw: T.RawIDType
+  public let typeName: String
 
   public init(_ raw: T.RawIDType) {
+    self.typeName = String.init(reflecting: T.self)
     self.raw = raw
-    self.asAny = AnyIdentifier(typeName: String.init(reflecting: T.self), rawID: .init(raw))
   }
 
 }
@@ -98,7 +118,7 @@ extension Identifiable {
 
 open class FlatStore {
 
-  final var storage: [AnyIdentifier : Any] = [:]
+  final var storage: NestedBuffer = .init()
 
   private let notificationCenter: NotificationCenter = .init()
 
@@ -124,19 +144,19 @@ extension FlatStore {
 
   public func get<T: Identifiable>(by id: Identifier<T>) -> T? {
     lock.lock(); defer { lock.unlock() }
-    return storage[id.asAny] as? T
+    return storage.object(for: id) as? T
   }
 
   public func get<S: Sequence, T: Identifiable>(by ids: S) -> [T] where S.Element == Identifier<T> {
     lock.lock(); defer { lock.unlock() }
     return ids.compactMap { key in
-      storage[key.asAny] as? T
+      storage.object(for: key) as? T
     }
   }
 
   public func get(by id: AnyIdentifier) -> Any? {
     lock.lock(); defer { lock.unlock() }
-    return storage[id]
+    return storage.object(for: id)
   }
 
   @discardableResult
@@ -145,7 +165,7 @@ extension FlatStore {
     let key = value.id
 
     lock.lock()
-    storage[key.asAny] = value
+    storage.set(object: value, for: key)
     lock.unlock()
 
     let notification = makeSeparatedNotificationName(key.notificationName)
@@ -182,7 +202,7 @@ extension FlatStore {
 
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
-    storage = [:]
+    storage = .init()
   }
 
 }
@@ -320,9 +340,8 @@ extension FlatStore {
     let context = FlatBatchUpdatesContext(store: self)
     let u = try updates(self, context)
 
-    for item in context.buffer {
-      storage[item.key] = item.value
-    }
+    storage.mergeWithOverwriting(context.buffer)
+
     return u
     
   }
