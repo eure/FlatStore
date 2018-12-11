@@ -8,6 +8,17 @@
 
 import Foundation
 
+final class __Ref<T> : CustomStringConvertible {
+  var source: T
+  init(_ source: T) {
+    self.source = source
+  }
+
+  var description: String {
+    return "__Ref<\(Unmanaged.passUnretained(self).toOpaque())> \(source)"
+  }
+}
+
 protocol NestedBufferKey {
   var firstKey: AnyHashable { get }
   var secondKey: AnyHashable { get }
@@ -15,42 +26,39 @@ protocol NestedBufferKey {
 
 struct NestedBuffer {
 
-  var backingStore: [AnyHashable : [AnyHashable : Any]] = [:]
+  var backingStore: [AnyHashable : __Ref<[AnyHashable : Any]>] = [:]
 
   init() {
     
   }
 
   func object<T : NestedBufferKey>(for key: T) -> Any? {
-    return backingStore[key.firstKey]?[key.secondKey]
+    return backingStore[key.firstKey]?.source[key.secondKey]
   }
 
   mutating func set<T : NestedBufferKey>(object: Any, for key: T) {
-    if var nested = backingStore[key.firstKey] {
-      nested[key.secondKey] = object
-      backingStore[key.firstKey] = nested
+    if let _ = backingStore[key.firstKey] {
+      backingStore[key.firstKey]!.source[key.secondKey] = object
     } else {
       var nested = [AnyHashable : Any]()
       nested[key.secondKey] = object
-      backingStore[key.firstKey] = nested
+      backingStore[key.firstKey] = .init(nested)
     }
   }
 
   mutating func removeValue<T : NestedBufferKey>(forKey key: T) -> Any? {
-    guard var nested = backingStore[key.firstKey] else { return nil }
-    let removedValue = nested.removeValue(forKey: key.secondKey)
-    backingStore[key.firstKey] = nested
+    guard let nested = backingStore[key.firstKey] else { return nil }
+    let removedValue = nested.source.removeValue(forKey: key.secondKey)
     return removedValue
   }
 
   mutating func mergeWithOverwriting(_ buffer: NestedBuffer) {
 
     for first in buffer.backingStore {
-      if var current = backingStore[first.key] {
-        current.merge(first.value) { (_, new) in new }
-        backingStore[first.key] = current
+      if let current = backingStore[first.key] {
+        current.source.merge(first.value.source) { (_, new) in new }
       } else {
-        backingStore[first.key] = first.value
+        backingStore[first.key] = .init(first.value.source)
       }
     }
     
