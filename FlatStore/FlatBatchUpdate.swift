@@ -33,22 +33,22 @@ public final class FlatBatchUpdatesContext {
     self.store = store
   }
 
-  public func set<T: Identifiable>(value: T) -> Identifier<T> {
+  public func set<T: FlatStoreObjectType>(value: T) -> FlatStoreObjectIdentifier<T> {
     let key = value.id
     buffer[key.asAny] = value
     return key
   }
 
-  public func set<T : Sequence>(values: T)  -> [Identifier<T.Element>] where T.Element : Identifiable {
+  public func set<T : Sequence>(values: T)  -> [FlatStoreObjectIdentifier<T.Element>] where T.Element : FlatStoreObjectType {
     return
-      values.map { value -> Identifier<T.Element> in
+      values.map { value -> FlatStoreObjectIdentifier<T.Element> in
         let key = value.id
         buffer[key.asAny] = value
         return key
     }
   }
 
-  public func get<T: Identifiable>(by key: Identifier<T>) -> T? {
+  public func get<T: FlatStoreObjectType>(by key: FlatStoreObjectIdentifier<T>) -> T? {
     if let transientObject = (buffer[key.asAny] as? T) {
       return transientObject
     }
