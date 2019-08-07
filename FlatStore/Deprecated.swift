@@ -19,3 +19,9 @@ public typealias FlatRef = FlatStoreRef
 
 @available(*, deprecated, renamed: "FlatStoreCachingRef")
 public typealias CachingFlatRef = FlatStoreCachingRef
+
+@available(*, deprecated, renamed: "FlatStoreCachingRefType")
+public typealias CachingFlatRefType = FlatStoreCachingRefType
+
+@available(*, deprecated, renamed: "FlatStoreRefType")
+public typealias FlatRefType = FlatStoreRefType

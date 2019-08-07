@@ -21,7 +21,12 @@
 
 import Foundation
 
-public final class FlatStoreRef<Element : FlatStoreObjectType> : Hashable {
+public protocol FlatStoreRefType {
+  associatedtype Element : FlatStoreObjectType
+  var value: Element? { get }
+}
+
+public final class FlatStoreRef<Element : FlatStoreObjectType> : FlatStoreRefType, Hashable {
 
   public static func == (lhs: FlatStoreRef<Element>, rhs: FlatStoreRef<Element>) -> Bool {
     return lhs.identifier == rhs.identifier
@@ -79,7 +84,12 @@ public final class FlatStoreRef<Element : FlatStoreObjectType> : Hashable {
   }
 }
 
-public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: Hashable {
+public protocol FlatStoreCachingRefType {
+  associatedtype Element : FlatStoreObjectType
+  var cached: Element { get }
+}
+
+public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: FlatStoreCachingRefType, Hashable {
 
   public static func == (lhs: FlatStoreCachingRef<Element>, rhs: FlatStoreCachingRef<Element>) -> Bool {
     return lhs.identifier == rhs.identifier
