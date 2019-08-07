@@ -38,7 +38,7 @@ class FlatStoreTests: XCTestCase {
   struct Comment : Identifiable, Equatable {
     var rawID: String
 
-    var userID: Identifier<User>
+    var userID: FlatStoreObjectIdentifier<User>
     var body: String = ""
   }
 
@@ -92,7 +92,7 @@ class FlatStoreTests: XCTestCase {
 
   func testGetRelationship() {
 
-    let comment = storeA.get(by: Identifier<Comment>.init("A-5"))
+    let comment = storeA.get(by: FlatStoreObjectIdentifier<Comment>.init("A-5"))
 
     XCTAssertNotNil(comment)
 
@@ -104,12 +104,12 @@ class FlatStoreTests: XCTestCase {
 
   func testInitialNotification() {
 
-    let comment = storeA.get(by: Identifier<Comment>.init("A-5"))!
+    let comment = storeA.get(by: FlatStoreObjectIdentifier<Comment>.init("A-5"))!
     let body = comment.body
 
     let exp = XCTestExpectation(description: "Receive Notification")
 
-    let token = storeA.observe(Identifier<Comment>.init("A-5"), receiveInitial: true) { (update) in
+    let token = storeA.observe(FlatStoreObjectIdentifier<Comment>.init("A-5"), receiveInitial: true) { (update) in
 
       guard let comment = update.value else {
         XCTFail("OH")
@@ -128,11 +128,11 @@ class FlatStoreTests: XCTestCase {
 
   func testUpdateNotification() {
 
-    var comment = storeA.get(by: Identifier<Comment>.init("A-5"))!
+    var comment = storeA.get(by: FlatStoreObjectIdentifier<Comment>.init("A-5"))!
 
     let exp = XCTestExpectation(description: "Receive Notification")
 
-    let token = storeA.observe(Identifier<Comment>.init("A-5"), receiveInitial: false) { (update) in
+    let token = storeA.observe(FlatStoreObjectIdentifier<Comment>.init("A-5"), receiveInitial: false) { (update) in
       guard let comment = update.value else {
         XCTFail("OH")
         exp.fulfill()
@@ -152,7 +152,7 @@ class FlatStoreTests: XCTestCase {
 
   func testRef() {
 
-    let comment = storeA.get(by: Identifier<Comment>.init("A-5"))!
+    let comment = storeA.get(by: FlatStoreObjectIdentifier<Comment>.init("A-5"))!
 
     let ref = storeA.makeRef(from: comment)!
 
@@ -163,11 +163,11 @@ class FlatStoreTests: XCTestCase {
 
   func testNotificationDifferentStore() {
 
-    var comment = storeA.get(by: Identifier<Comment>("A-5"))!
+    var comment = storeA.get(by: FlatStoreObjectIdentifier<Comment>("A-5"))!
 
     let exp = XCTestExpectation(description: "Receive Notification")
 
-    let token = storeA.observe(Identifier<Comment>("A-5"), receiveInitial: false) { (change) in
+    let token = storeA.observe(FlatStoreObjectIdentifier<Comment>("A-5"), receiveInitial: false) { (change) in
       XCTFail("Oh")
     }
 
@@ -186,7 +186,7 @@ class FlatStoreTests: XCTestCase {
     // This is an example of a performance test case.
     self.measure {
       for i in 0..<10000 {
-        _ = storeA.get(by: Identifier<Comment>("A-\(i)"))
+        _ = storeA.get(by: FlatStoreObjectIdentifier<Comment>("A-\(i)"))
       }
     }
   }

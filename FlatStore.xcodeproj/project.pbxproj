@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07224821960A88009B815F /* FlatStoreTests.swift */; };
+		4B17047822F99DAA00B695C4 /* Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17047722F99DAA00B695C4 /* Deprecated.swift */; };
 		4B24C544219600B000932155 /* FlatStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B24C53A219600B000932155 /* FlatStore.framework */; };
 		4B24C54B219600B000932155 /* FlatStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B24C53D219600B000932155 /* FlatStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4B24C5572196021200932155 /* FlatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5542196021100932155 /* FlatStore.swift */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		4B07224821960A88009B815F /* FlatStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatStoreTests.swift; sourceTree = "<group>"; };
+		4B17047722F99DAA00B695C4 /* Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deprecated.swift; sourceTree = "<group>"; };
 		4B24C53A219600B000932155 /* FlatStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlatStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B24C53D219600B000932155 /* FlatStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlatStore.h; sourceTree = "<group>"; };
 		4B24C53E219600B000932155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				4B24C5562196021200932155 /* FlatRef.swift */,
 				4B24C5542196021100932155 /* FlatStore.swift */,
 				4B24C53E219600B000932155 /* Info.plist */,
+				4B17047722F99DAA00B695C4 /* Deprecated.swift */,
 			);
 			path = FlatStore;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B17047822F99DAA00B695C4 /* Deprecated.swift in Sources */,
 				4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */,
 				4B24C5592196021300932155 /* FlatRef.swift in Sources */,
 				4B24C5572196021200932155 /* FlatStore.swift in Sources */,

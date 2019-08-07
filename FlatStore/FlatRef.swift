@@ -21,14 +21,9 @@
 
 import Foundation
 
-public protocol FlatRefType {
-  associatedtype Element : Identifiable
-  var value: Element? { get }
-}
+public final class FlatStoreRef<Element : FlatStoreObjectType> : Hashable {
 
-open class FlatRef<Element : Identifiable> : Hashable {
-
-  public static func == (lhs: FlatRef<Element>, rhs: FlatRef<Element>) -> Bool {
+  public static func == (lhs: FlatStoreRef<Element>, rhs: FlatStoreRef<Element>) -> Bool {
     return lhs.identifier == rhs.identifier
   }
 
@@ -42,7 +37,7 @@ open class FlatRef<Element : Identifiable> : Hashable {
 
   public weak var store: FlatStore?
 
-  public let identifier: Identifier<Element>
+  public let identifier: FlatStoreObjectIdentifier<Element>
 
   public var value: Element? {
     os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
@@ -59,7 +54,7 @@ open class FlatRef<Element : Identifiable> : Hashable {
 
   // MARK: - Initializers
 
-  init(key: Identifier<Element>, in store: FlatStore, cached: Element?) {
+  init(key: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element?) {
     self.store = store
     self.identifier = key
     self.cached = cached
@@ -84,14 +79,9 @@ open class FlatRef<Element : Identifiable> : Hashable {
   }
 }
 
-public protocol CachingFlatRefType {
-  associatedtype Element : Identifiable
-  var cached: Element { get }
-}
+public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: Hashable {
 
-open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable {
-
-  public static func == (lhs: CachingFlatRef<Element>, rhs: CachingFlatRef<Element>) -> Bool {
+  public static func == (lhs: FlatStoreCachingRef<Element>, rhs: FlatStoreCachingRef<Element>) -> Bool {
     return lhs.identifier == rhs.identifier
   }
 
@@ -105,7 +95,7 @@ open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable
 
   public weak var store: FlatStore?
 
-  public let identifier: Identifier<Element>
+  public let identifier: FlatStoreObjectIdentifier<Element>
 
   public var cached: Element {
     os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
@@ -124,7 +114,7 @@ open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable
 
   // MARK: - Initializers
 
-  init(key: Identifier<Element>, in store: FlatStore, cached: Element) {
+  init(key: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element) {
     self.store = store
     self.identifier = key
     self._cached = cached
@@ -156,11 +146,11 @@ open class CachingFlatRef<Element : Identifiable> : CachingFlatRefType, Hashable
 
   }
 
-  public func asFlatRef() -> FlatRef<Element>? {
+  public func asFlatRef() -> FlatStoreRef<Element>? {
 
     guard let store = store else { return nil }
 
-    return FlatRef.init(key: identifier, in: store, cached: nil)
+    return FlatStoreRef.init(key: identifier, in: store, cached: nil)
 
   }
 
