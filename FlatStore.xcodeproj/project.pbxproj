@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B07224821960A88009B815F /* FlatStoreTests.swift */; };
+		4B156FD923279EFB00533C9A /* AllObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B156FD823279EFB00533C9A /* AllObjectsTests.swift */; };
 		4B17047822F99DAA00B695C4 /* Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17047722F99DAA00B695C4 /* Deprecated.swift */; };
 		4B24C544219600B000932155 /* FlatStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B24C53A219600B000932155 /* FlatStore.framework */; };
 		4B24C54B219600B000932155 /* FlatStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B24C53D219600B000932155 /* FlatStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		4B07224821960A88009B815F /* FlatStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatStoreTests.swift; sourceTree = "<group>"; };
+		4B156FD823279EFB00533C9A /* AllObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllObjectsTests.swift; sourceTree = "<group>"; };
 		4B17047722F99DAA00B695C4 /* Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deprecated.swift; sourceTree = "<group>"; };
 		4B24C53A219600B000932155 /* FlatStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FlatStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B24C53D219600B000932155 /* FlatStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlatStore.h; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				4B07224821960A88009B815F /* FlatStoreTests.swift */,
+				4B156FD823279EFB00533C9A /* AllObjectsTests.swift */,
 				4B24C54A219600B000932155 /* Info.plist */,
 			);
 			path = FlatStoreTests;
@@ -220,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B156FD923279EFB00533C9A /* AllObjectsTests.swift in Sources */,
 				4B07224921960A89009B815F /* FlatStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

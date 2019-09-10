@@ -36,7 +36,11 @@ public struct AnyIdentifier : Hashable {
 }
 
 public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, CustomStringConvertible {
-
+  
+  public static var typeName: String {
+    String.init(reflecting: T.self)
+  }
+  
   public static func == <T>(lhs: FlatStoreObjectIdentifier<T>, rhs: FlatStoreObjectIdentifier<T>) -> Bool {
     return lhs.raw == rhs.raw
   }
@@ -50,7 +54,7 @@ public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, Cus
 
   public init(_ raw: T.RawIDType) {
     self.raw = raw
-    self.asAny = AnyIdentifier(typeName: String.init(reflecting: T.self), rawID: .init(raw))
+    self.asAny = AnyIdentifier(typeName: Self.typeName, rawID: .init(raw))
   }
 
   public var description: String {
@@ -104,6 +108,8 @@ extension FlatStoreObjectType {
   
 }
 
+// MARK: FlatStore
+
 open class FlatStore {
 
   final var storage: [AnyIdentifier : Any] = [:]
@@ -127,9 +133,9 @@ open class FlatStore {
   
 }
 
-/// Accessing Data
+// MARK: - Accessing Data
 extension FlatStore {
-
+  
   public func get<T: FlatStoreObjectType>(by id: FlatStoreObjectIdentifier<T>) -> T? {
     lock.lock(); defer { lock.unlock() }
     return storage[id.asAny] as? T
@@ -191,6 +197,17 @@ extension FlatStore {
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
     storage = [:]
+  }
+
+}
+
+// MARK: - Querying
+extension FlatStore {
+  
+  public func allObjects<T: FlatStoreObjectType>(type: T.Type) -> [T] {
+    lock.lock(); defer { lock.unlock() }
+    let typeName = T.ID.typeName
+    return storage.filter { $0.key.typeName == typeName }.map { $0.value } as! [T]
   }
 
 }

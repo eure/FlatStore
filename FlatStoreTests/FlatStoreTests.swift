@@ -22,32 +22,34 @@
 import XCTest
 @testable import FlatStore
 
+struct User : FlatStoreObjectType, Equatable {
+  
+  var rawID: String { return name }
+  
+  var name: String
+  
+}
+
+struct Comment : FlatStoreObjectType, Equatable {
+  var rawID: String
+  
+  var userID: FlatStoreObjectIdentifier<User>
+  var body: String = ""
+}
+
+struct Post : FlatStoreObjectType, Equatable {
+  
+  var rawID: String
+  
+  var body: String = ""
+}
+
 class FlatStoreTests: XCTestCase {
 
   let storeA = FlatStore()
   let storeB = FlatStore()
 
-  struct User : Identifiable, Equatable {
-
-    var rawID: String { return name }
-
-    var name: String
-
-  }
-
-  struct Comment : Identifiable, Equatable {
-    var rawID: String
-
-    var userID: FlatStoreObjectIdentifier<User>
-    var body: String = ""
-  }
-
-  struct Post : Identifiable, Equatable {
-
-    var rawID: String
-
-    var body: String = ""
-  }
+ 
 
   override func setUp() {
     // Put setup code here. This method is called before the invocation of each test method in the class.
