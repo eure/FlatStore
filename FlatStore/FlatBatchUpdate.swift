@@ -26,7 +26,7 @@ public final class FlatBatchUpdatesContext {
 
 //  private let store: FlatStore
 
-  var buffer: [AnyIdentifier : Any] = [:]
+  var buffer: [FlatStoreAnyIdentifier : Any] = [:]
   private let store: FlatStore
 
   public init(store: FlatStore) {

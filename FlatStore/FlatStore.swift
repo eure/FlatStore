@@ -21,7 +21,7 @@
 
 import Foundation
 
-public struct AnyIdentifier : Hashable {
+public struct FlatStoreAnyIdentifier : Hashable {
 
   public let typeName: String
   public let raw: AnyHashable
@@ -49,12 +49,12 @@ public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, Cus
     return asAny.notificationName
   }
 
-  public let asAny: AnyIdentifier
+  public let asAny: FlatStoreAnyIdentifier
   public let raw: T.RawIDType
 
   public init(_ raw: T.RawIDType) {
     self.raw = raw
-    self.asAny = AnyIdentifier(typeName: Self.typeName, rawID: .init(raw))
+    self.asAny = FlatStoreAnyIdentifier(typeName: Self.typeName, rawID: .init(raw))
   }
 
   public var description: String {
@@ -112,7 +112,7 @@ extension FlatStoreObjectType {
 
 open class FlatStore {
 
-  final var storage: [AnyIdentifier : Any] = [:]
+  final var storage: [FlatStoreAnyIdentifier : Any] = [:]
 
   private let notificationCenter: NotificationCenter = .init()
 
@@ -148,7 +148,7 @@ extension FlatStore {
     }
   }
 
-  public func get(by id: AnyIdentifier) -> Any? {
+  public func get(by id: FlatStoreAnyIdentifier) -> Any? {
     lock.lock(); defer { lock.unlock() }
     return storage[id]
   }
@@ -270,7 +270,7 @@ extension FlatStore {
   }
 
   public func observe(
-    _ key: AnyIdentifier,
+    _ key: FlatStoreAnyIdentifier,
     receiveInitial: Bool = true,
     callback: @escaping (Update<Any?>) -> Void
     ) -> NotificationTokenType {
