@@ -29,24 +29,24 @@ public protocol FlatStoreRefType {
 public final class FlatStoreRef<Element : FlatStoreObjectType> : FlatStoreRefType, Hashable {
 
   public static func == (lhs: FlatStoreRef<Element>, rhs: FlatStoreRef<Element>) -> Bool {
-    return lhs.identifier == rhs.identifier
+    return lhs.id == rhs.id
   }
 
   // MARK: - Properties
 
   public func hash(into hasher: inout Hasher) {
-    hasher.combine(identifier)
+    hasher.combine(id)
   }
 
   private var lock = os_unfair_lock_s()
 
   public weak var store: FlatStore?
 
-  public let identifier: FlatStoreObjectIdentifier<Element>
+  public let id: FlatStoreObjectIdentifier<Element>
 
   public var value: Element? {
     os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
-    return cached ?? store?.get(by: identifier)
+    return cached ?? store?.get(by: id)
   }
 
   public var isLiving: Bool {
@@ -59,9 +59,9 @@ public final class FlatStoreRef<Element : FlatStoreObjectType> : FlatStoreRefTyp
 
   // MARK: - Initializers
 
-  init(key: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element?) {
+  init(id: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element?) {
     self.store = store
-    self.identifier = key
+    self.id = id
     self.cached = cached
     token = observe { [weak self] (update) in
       guard let self = self else { return }
@@ -79,7 +79,7 @@ public final class FlatStoreRef<Element : FlatStoreObjectType> : FlatStoreRefTyp
 
   public func observe(callback: @escaping (FlatStore.Update<Element?>) -> Void) -> NotificationTokenType? {
 
-    return store?.observe(identifier, callback: callback)
+    return store?.observe(id, callback: callback)
 
   }
 }
@@ -92,20 +92,20 @@ public protocol FlatStoreCachingRefType {
 public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: FlatStoreCachingRefType, Hashable {
 
   public static func == (lhs: FlatStoreCachingRef<Element>, rhs: FlatStoreCachingRef<Element>) -> Bool {
-    return lhs.identifier == rhs.identifier
+    return lhs.id == rhs.id
   }
 
   // MARK: - Properties
 
   public func hash(into hasher: inout Hasher) {
-    hasher.combine(identifier)
+    hasher.combine(id)
   }
 
   private var lock = os_unfair_lock_s()
 
   public weak var store: FlatStore?
 
-  public let identifier: FlatStoreObjectIdentifier<Element>
+  public let id: FlatStoreObjectIdentifier<Element>
 
   public var cached: Element {
     os_unfair_lock_lock(&lock); defer { os_unfair_lock_unlock(&lock) }
@@ -124,11 +124,11 @@ public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: FlatStore
 
   // MARK: - Initializers
 
-  init(key: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element) {
+  init(id: FlatStoreObjectIdentifier<Element>, in store: FlatStore, cached: Element) {
     self.store = store
-    self.identifier = key
+    self.id = id
     self._cached = cached
-    token = store.observe(key) { [weak self] (update) in
+    token = store.observe(id) { [weak self] (update) in
       guard let self = self else { return }
       guard let value = update.value else {
         self.isDeleted = true
@@ -149,7 +149,7 @@ public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: FlatStore
 
   public func observe(callback: @escaping (FlatStore.Update<Element>) -> Void) -> NotificationTokenType? {
 
-    return store?.observe(identifier, callback: { o in
+    return store?.observe(id, callback: { o in
       guard let value = o.value else { return }
       callback(FlatStore.Update<Element>.init(value: value, from: o.store))
     })
@@ -160,7 +160,7 @@ public final class FlatStoreCachingRef<Element : FlatStoreObjectType>: FlatStore
 
     guard let store = store else { return nil }
 
-    return FlatStoreRef.init(key: identifier, in: store, cached: nil)
+    return FlatStoreRef.init(id: id, in: store, cached: nil)
 
   }
 

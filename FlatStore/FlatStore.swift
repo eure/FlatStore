@@ -37,6 +37,10 @@ public struct FlatStoreAnyIdentifier : Hashable {
 
 public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, CustomStringConvertible {
   
+  public var id: T.RawIDType {
+    return raw
+  }
+  
   public static var typeName: String {
     String.init(reflecting: T.self)
   }
@@ -89,14 +93,15 @@ public final class FlatStoreNotificationToken : NotificationTokenType {
 }
 
 public protocol FlatStoreObjectType {
-
+    
   associatedtype RawIDType : Hashable
   var rawID: RawIDType { get }
+  var id: FlatStoreObjectIdentifier<Self> { get }
 }
 
 extension FlatStoreObjectType {
 
-  public typealias ID = FlatStoreObjectIdentifier<Self>
+  public typealias FlatStoreID = FlatStoreObjectIdentifier<Self>
   
   public typealias Ref = FlatStoreRef<Self>
   
@@ -115,7 +120,7 @@ open class FlatStore {
   final var storage: [FlatStoreAnyIdentifier : Any] = [:]
 
   private let notificationCenter: NotificationCenter = .init()
-
+  
   private let storeIdentifier: String = UUID().uuidString
 
   private let notificationQueue = OperationQueue()
@@ -157,7 +162,7 @@ extension FlatStore {
   public func set<T: FlatStoreObjectType>(value: T) -> T.CachingRef {
     
     let key = value.id
-
+    
     lock.lock()
     storage[key.asAny] = value
     lock.unlock()
@@ -206,7 +211,7 @@ extension FlatStore {
   
   public func allObjects<T: FlatStoreObjectType>(type: T.Type) -> [T] {
     lock.lock(); defer { lock.unlock() }
-    let typeName = T.ID.typeName
+    let typeName = T.FlatStoreID.typeName
     return storage.filter { $0.key.typeName == typeName }.map { $0.value } as! [T]
   }
 
@@ -215,11 +220,11 @@ extension FlatStore {
 extension FlatStore {
 
   private func _makeCachingRef<T : FlatStoreObjectType>(from value: T) -> T.CachingRef {
-    return FlatStoreCachingRef<T>.init(key: value.id, in: self, cached: value)
+    return FlatStoreCachingRef<T>.init(id: value.id, in: self, cached: value)
   }
 
   private func _makeRef<T : FlatStoreObjectType>(from value: T) -> T.Ref {
-    return FlatStoreRef<T>.init(key: value.id, in: self, cached: value)
+    return FlatStoreRef<T>.init(id: value.id, in: self, cached: value)
   }
 
   public func makeRef<T : FlatStoreObjectType>(from value: T) -> T.Ref? {
@@ -232,16 +237,16 @@ extension FlatStore {
     return _makeCachingRef(from: value)
   }
 
-  public func makeCachingRef<T : FlatStoreObjectType>(from identifier: T.ID) -> T.CachingRef? {
+  public func makeCachingRef<T : FlatStoreObjectType>(from identifier: T.FlatStoreID) -> T.CachingRef? {
     guard let value = get(by: identifier) else { return nil }
-    let ref = FlatStoreCachingRef.init(key: identifier, in: self, cached: value)
+    let ref = FlatStoreCachingRef.init(id: identifier, in: self, cached: value)
     return ref
   }
 
   public func makeCachingRefs<S : Sequence, T : FlatStoreObjectType>(from identifiers: S) -> [T.CachingRef] where S.Element == FlatStoreObjectIdentifier<T> {
     let values = get(by: identifiers)
     let refs = values.map {
-      FlatStoreCachingRef.init(key: $0.id, in: self, cached: $0)
+      FlatStoreCachingRef.init(id: $0.id, in: self, cached: $0)
     }
     return refs
   }
@@ -249,7 +254,7 @@ extension FlatStore {
   public func makeCachingRefs<S : Sequence, T : FlatStoreObjectType>(from values: S) -> [T.CachingRef] where S.Element == T {
     let values = get(by: values.map { $0.id })
     let refs = values.map {
-      FlatStoreCachingRef.init(key: $0.id, in: self, cached: $0)
+      FlatStoreCachingRef.init(id: $0.id, in: self, cached: $0)
     }
     return refs
   }
@@ -306,7 +311,7 @@ extension FlatStore {
   }
 
   public func observe<T: FlatStoreObjectType>(
-    _ key: T.ID,
+    _ key: T.FlatStoreID,
     receiveInitial: Bool = true,
     callback: @escaping (Update<T?>) -> Void
     ) -> NotificationTokenType {
