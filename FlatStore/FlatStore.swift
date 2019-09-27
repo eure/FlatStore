@@ -113,11 +113,44 @@ extension FlatStoreObjectType {
   
 }
 
+public protocol PersistentStoreType {
+  
+  typealias Storage = [FlatStoreAnyIdentifier : Any]
+  
+  var rawStorage: Storage { get }
+  var allItemCount: Int { get }
+  
+  func updateStorage(_ update: (inout Storage) -> ())
+  
+}
+
+public final class InMemoryPersistentStore: PersistentStoreType {
+  
+  public var allItemCount: Int {
+    return rawStorage.count
+  }
+  
+  public var rawStorage: Storage = [:]
+  
+  public init() {
+    
+  }
+  
+  public func updateStorage(_ update: (inout Storage) -> ()) {
+    update(&rawStorage)
+  }
+  
+}
+
 // MARK: FlatStore
 
 open class FlatStore {
-
-  final var storage: [FlatStoreAnyIdentifier : Any] = [:]
+  
+  public var itemCount: Int {
+    storage.allItemCount
+  }
+  
+  private let storage: PersistentStoreType
 
   private let notificationCenter: NotificationCenter = .init()
   
@@ -127,7 +160,8 @@ open class FlatStore {
 
   private let lock = NSRecursiveLock()
 
-  public init() {
+  public init(persistentStore: PersistentStoreType = InMemoryPersistentStore()) {
+    self.storage = persistentStore
     notificationQueue.maxConcurrentOperationCount = 1    
   }
 
@@ -143,19 +177,19 @@ extension FlatStore {
   
   public func get<T: FlatStoreObjectType>(by id: FlatStoreObjectIdentifier<T>) -> T? {
     lock.lock(); defer { lock.unlock() }
-    return storage[id.asAny] as? T
+    return storage.rawStorage[id.asAny] as? T
   }
 
   public func get<S: Sequence, T: FlatStoreObjectType>(by ids: S) -> [T] where S.Element == FlatStoreObjectIdentifier<T> {
     lock.lock(); defer { lock.unlock() }
     return ids.compactMap { key in
-      storage[key.asAny] as? T
+      storage.rawStorage[key.asAny] as? T
     }
   }
 
   public func get(by id: FlatStoreAnyIdentifier) -> Any? {
     lock.lock(); defer { lock.unlock() }
-    return storage[id]
+    return storage.rawStorage[id]
   }
 
   @discardableResult
@@ -164,7 +198,9 @@ extension FlatStore {
     let key = value.id
     
     lock.lock()
-    storage[key.asAny] = value
+    storage.updateStorage { (store) in
+      _ = store[key.asAny] = value
+    }
     lock.unlock()
 
     let notification = makeSeparatedNotificationName(key.notificationName)
@@ -190,7 +226,9 @@ extension FlatStore {
     let key = value.id
 
     lock.lock()
-    _ = storage.removeValue(forKey: key.asAny)
+    storage.updateStorage { (store) in
+      _ = store.removeValue(forKey: key.asAny)
+    }
     lock.unlock()
 
     let notification = makeSeparatedNotificationName(key.notificationName)
@@ -201,7 +239,9 @@ extension FlatStore {
 
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
-    storage = [:]
+    storage.updateStorage { (store) in
+      _ = store.removeAll()
+    }
   }
 
 }
@@ -212,7 +252,7 @@ extension FlatStore {
   public func allObjects<T: FlatStoreObjectType>(type: T.Type) -> [T] {
     lock.lock(); defer { lock.unlock() }
     let typeName = T.FlatStoreID.typeName
-    return storage.filter { $0.key.typeName == typeName }.map { $0.value } as! [T]
+    return storage.rawStorage.filter { $0.key.typeName == typeName }.map { $0.value } as! [T]
   }
 
 }
@@ -350,8 +390,10 @@ extension FlatStore {
     let context = FlatBatchUpdatesContext(store: self)
     let u = try updates(self, context)
 
-    for item in context.buffer {
-      storage[item.key] = item.value
+    storage.updateStorage { (store) in
+      for item in context.buffer {
+        store[item.key] = item.value
+      }
     }
     return u
     

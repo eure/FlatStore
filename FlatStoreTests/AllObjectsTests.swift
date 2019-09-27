@@ -57,7 +57,7 @@ final class AllObjectsTests: XCTestCase {
   
   func testPerformanceAllObjects() {
     
-    print(storeA.storage.count)
+    print(storeA.itemCount)
     measure {
       storeA.allObjects(type: Post.self)
     }
