@@ -26,7 +26,8 @@ public final class FlatBatchUpdatesContext {
 
 //  private let store: FlatStore
 
-  var buffer: [FlatStoreAnyIdentifier : Any] = [:]
+  var buffer = InMemoryEntityStorage()
+  
   private let store: FlatStore
 
   public init(store: FlatStore) {
@@ -35,21 +36,29 @@ public final class FlatBatchUpdatesContext {
 
   public func set<T: FlatStoreObjectType>(value: T) -> FlatStoreObjectIdentifier<T> {
     let key = value.id
-    buffer[key.asAny] = value
+    buffer.update(inTable: T.FlatStoreID.tableName) { (table) in
+      table.byID[key.id] = value
+    }
     return key
   }
 
-  public func set<T : Sequence>(values: T)  -> [FlatStoreObjectIdentifier<T.Element>] where T.Element : FlatStoreObjectType {
-    return
-      values.map { value -> FlatStoreObjectIdentifier<T.Element> in
-        let key = value.id
-        buffer[key.asAny] = value
-        return key
+  public func set<T : Sequence>(values: T) -> [FlatStoreObjectIdentifier<T.Element>] where T.Element : FlatStoreObjectType {
+    
+    var ids: [FlatStoreObjectIdentifier<T.Element>] = []
+    
+    buffer.update(inTable: T.Element.FlatStoreID.tableName) { (table) in
+      values.forEach { value in
+        table.byID[value.id] = value
+        ids.append(value.id)
+      }
     }
+    
+    return ids
   }
 
   public func get<T: FlatStoreObjectType>(by key: FlatStoreObjectIdentifier<T>) -> T? {
-    if let transientObject = (buffer[key.asAny] as? T) {
+            
+    if let transientObject = (buffer.table(name: T.FlatStoreID.tableName)?.byID[key.id] as? T) {
       return transientObject
     }
     if let object = store.get(by: key) {

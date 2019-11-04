@@ -23,14 +23,14 @@ import Foundation
 
 public struct FlatStoreAnyIdentifier : Hashable {
 
-  public let typeName: String
-  public let raw: AnyHashable
+  public let tableName: String
+  public let id: AnyHashable
   public let notificationName: Notification.Name
 
-  public init(typeName: String, rawID: AnyHashable) {
-    self.typeName = typeName
-    self.raw = rawID
-    self.notificationName = .init(rawValue: "\(typeName)|\(rawID)")
+  public init(tableName: String, id: AnyHashable) {
+    self.tableName = tableName
+    self.id = id
+    self.notificationName = .init(rawValue: "\(tableName)|\(id)")
   }
 
 }
@@ -41,6 +41,10 @@ public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, Cus
     return raw
   }
   
+  public static var tableName: String {
+    typeName
+  }
+    
   public static var typeName: String {
     String.init(reflecting: T.self)
   }
@@ -58,7 +62,10 @@ public struct FlatStoreObjectIdentifier<T : FlatStoreObjectType> : Hashable, Cus
 
   public init(_ raw: T.RawIDType) {
     self.raw = raw
-    self.asAny = FlatStoreAnyIdentifier(typeName: Self.typeName, rawID: .init(raw))
+    self.asAny = FlatStoreAnyIdentifier(
+      tableName: Self.typeName,
+      id: .init(raw)
+    )
   }
 
   public var description: String {
@@ -113,33 +120,25 @@ extension FlatStoreObjectType {
   
 }
 
-public protocol PersistentStoreType {
-  
-  typealias Storage = [FlatStoreAnyIdentifier : Any]
-  
-  var rawStorage: Storage { get }
-  var allItemCount: Int { get }
-  
-  func updateStorage(_ update: (inout Storage) -> ())
-  
+public struct EntityTable {
+  public var byID: [AnyHashable : Any] = [:]
 }
 
-public final class InMemoryPersistentStore: PersistentStoreType {
+public protocol EntityStorageType {
   
-  public var allItemCount: Int {
-    return rawStorage.count
-  }
+  typealias Storage = [AnyHashable : EntityTable]
   
-  public var rawStorage: Storage = [:]
+  var allItemCount: Int { get }
   
-  public init() {
-    
-  }
+  func allItems() -> [Any]
   
-  public func updateStorage(_ update: (inout Storage) -> ()) {
-    update(&rawStorage)
-  }
+  mutating func update(inTable name: String, update: (inout EntityTable) -> Void)
   
+  func table(name: String) -> EntityTable?
+  
+  mutating func removeAll()
+      
+  mutating func merge(inMemoryStorage: InMemoryEntityStorage)
 }
 
 // MARK: FlatStore
@@ -150,7 +149,7 @@ open class FlatStore {
     storage.allItemCount
   }
   
-  private let storage: PersistentStoreType
+  private var storage: EntityStorageType
 
   private let notificationCenter: NotificationCenter = .init()
   
@@ -160,7 +159,7 @@ open class FlatStore {
 
   private let lock = NSRecursiveLock()
 
-  public init(persistentStore: PersistentStoreType = InMemoryPersistentStore()) {
+  public init(persistentStore: EntityStorageType = InMemoryEntityStorage()) {
     self.storage = persistentStore
     notificationQueue.maxConcurrentOperationCount = 1    
   }
@@ -177,19 +176,19 @@ extension FlatStore {
   
   public func get<T: FlatStoreObjectType>(by id: FlatStoreObjectIdentifier<T>) -> T? {
     lock.lock(); defer { lock.unlock() }
-    return storage.rawStorage[id.asAny] as? T
+    return storage.table(name: T.FlatStoreID.tableName)?.byID[id.id] as? T
   }
 
   public func get<S: Sequence, T: FlatStoreObjectType>(by ids: S) -> [T] where S.Element == FlatStoreObjectIdentifier<T> {
     lock.lock(); defer { lock.unlock() }
     return ids.compactMap { key in
-      storage.rawStorage[key.asAny] as? T
+      storage.table(name: T.FlatStoreID.tableName)?.byID[key] as? T
     }
   }
 
   public func get(by id: FlatStoreAnyIdentifier) -> Any? {
     lock.lock(); defer { lock.unlock() }
-    return storage.rawStorage[id]
+    return storage.table(name: id.tableName)?.byID[id.id]
   }
 
   @discardableResult
@@ -198,8 +197,8 @@ extension FlatStore {
     let key = value.id
     
     lock.lock()
-    storage.updateStorage { (store) in
-      _ = store[key.asAny] = value
+    storage.update(inTable: T.FlatStoreID.tableName) { (table) in
+      table.byID[key.id] = value
     }
     lock.unlock()
 
@@ -226,8 +225,8 @@ extension FlatStore {
     let key = value.id
 
     lock.lock()
-    storage.updateStorage { (store) in
-      _ = store.removeValue(forKey: key.asAny)
+    storage.update(inTable: T.FlatStoreID.tableName) { (table) in
+      table.byID.removeValue(forKey: key.asAny)
     }
     lock.unlock()
 
@@ -239,9 +238,7 @@ extension FlatStore {
 
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
-    storage.updateStorage { (store) in
-      _ = store.removeAll()
-    }
+    storage.removeAll()
   }
 
 }
@@ -251,8 +248,7 @@ extension FlatStore {
   
   public func allObjects<T: FlatStoreObjectType>(type: T.Type) -> [T] {
     lock.lock(); defer { lock.unlock() }
-    let typeName = T.FlatStoreID.typeName
-    return storage.rawStorage.filter { $0.key.typeName == typeName }.map { $0.value } as! [T]
+    return storage.table(name: T.FlatStoreID.tableName)?.byID.map { $0.value } as! [T]
   }
 
 }
@@ -389,12 +385,7 @@ extension FlatStore {
 
     let context = FlatBatchUpdatesContext(store: self)
     let u = try updates(self, context)
-
-    storage.updateStorage { (store) in
-      for item in context.buffer {
-        store[item.key] = item.value
-      }
-    }
+    storage.merge(inMemoryStorage: context.buffer)
     return u
     
   }
