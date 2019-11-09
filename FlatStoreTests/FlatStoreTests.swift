@@ -162,6 +162,18 @@ class FlatStoreTests: XCTestCase {
     XCTAssertEqual(ref.value, comment)
 
   }
+  
+  func testNestedObject() {
+    
+    let user = User(name: "Hey")
+    let comment = Comment(rawID: "commen_1", userID: user.id)
+    
+    storeA.performBatchUpdates { (store, context) -> Void in
+      _ = context.set(value: user)
+      _ = context.set(value: comment)
+    }
+    
+  }
 
   func testNotificationDifferentStore() {
 

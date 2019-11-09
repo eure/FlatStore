@@ -45,7 +45,8 @@ public struct InMemoryEntityStorage: EntityStorageType {
   public func allItems() -> [Any] {
     backingStore.reduce(into: [Any]()) { (r, arg1) in
       let (_, value) = arg1
-      r.append(value.byID.map { $0.value })
+      let items = value.byID.map { $0.value }
+      r.append(contentsOf: items)
     }
   }
   
