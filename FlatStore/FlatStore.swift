@@ -191,7 +191,7 @@ extension FlatStore {
   public func get<S: Sequence, T: FlatStoreObjectType>(by ids: S) -> [T] where S.Element == FlatStoreObjectIdentifier<T> {
     lock.lock(); defer { lock.unlock() }
     return ids.compactMap { key in
-      storage.table(name: T.FlatStoreID.tableName)?.byID[key] as? T
+      storage.table(name: T.FlatStoreID.tableName)?.byID[key.raw] as? T
     }
   }
 
@@ -235,7 +235,7 @@ extension FlatStore {
 
     lock.lock()
     storage.update(inTable: T.FlatStoreID.tableName) { (table) in
-      table.byID.removeValue(forKey: key.asAny)
+      table.byID.removeValue(forKey: key.raw)
     }
     lock.unlock()
    
