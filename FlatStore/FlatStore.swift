@@ -99,7 +99,12 @@ public final class FlatStoreNotificationToken : NotificationTokenType {
   }
 }
 
-public protocol FlatStoreObjectType {
+public protocol _FlatStoreObjectType {
+  
+  var notificationName: Notification.Name { get }
+}
+
+public protocol FlatStoreObjectType: _FlatStoreObjectType {
     
   associatedtype RawIDType : Hashable
   var rawID: RawIDType { get }
@@ -116,6 +121,10 @@ extension FlatStoreObjectType {
 
   public var id: FlatStoreObjectIdentifier<Self> {
     return FlatStoreObjectIdentifier<Self>.init(rawID)
+  }
+  
+  public var notificationName: Notification.Name {
+    id.notificationName
   }
   
 }
@@ -229,16 +238,20 @@ extension FlatStore {
       table.byID.removeValue(forKey: key.asAny)
     }
     lock.unlock()
-
-    let notification = makeSeparatedNotificationName(key.notificationName)
-    notificationQueue.addOperation {
-      self.notificationCenter.post(name: notification, object: value)
-    }
+   
+    dispatchUpdateNotification(name: key.notificationName, value: value)
   }
 
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
     storage.removeAll()
+  }
+  
+  func dispatchUpdateNotification(name: Notification.Name, value: Any) {
+    let notification = makeSeparatedNotificationName(name)
+    notificationQueue.addOperation {
+      self.notificationCenter.post(name: notification, object: value)
+    }
   }
 
 }
@@ -385,7 +398,13 @@ extension FlatStore {
 
     let context = FlatBatchUpdatesContext(store: self)
     let u = try updates(self, context)
+        
     storage.merge(inMemoryStorage: context.buffer)
+    
+    for item in context.buffer.allItems() as! [_FlatStoreObjectType] {
+      dispatchUpdateNotification(name: item.notificationName, value: item)
+    }
+    
     return u
     
   }
