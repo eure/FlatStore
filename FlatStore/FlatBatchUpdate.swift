@@ -37,7 +37,7 @@ public final class FlatBatchUpdatesContext {
   public func set<T: FlatStoreObjectType>(value: T) -> FlatStoreObjectIdentifier<T> {
     let key = value.id
     buffer.update(inTable: T.FlatStoreID.tableName) { (table) in
-      table.byID[key.id] = value
+      table.byID[key.raw] = value
     }
     return key
   }
@@ -48,7 +48,7 @@ public final class FlatBatchUpdatesContext {
     
     buffer.update(inTable: T.Element.FlatStoreID.tableName) { (table) in
       values.forEach { value in
-        table.byID[value.id] = value
+        table.byID[value.id.raw] = value
         ids.append(value.id)
       }
     }
@@ -58,7 +58,7 @@ public final class FlatBatchUpdatesContext {
 
   public func get<T: FlatStoreObjectType>(by key: FlatStoreObjectIdentifier<T>) -> T? {
             
-    if let transientObject = (buffer.table(name: T.FlatStoreID.tableName)?.byID[key.id] as? T) {
+    if let transientObject = (buffer.table(name: T.FlatStoreID.tableName)?.byID[key.raw] as? T) {
       return transientObject
     }
     if let object = store.get(by: key) {

@@ -54,7 +54,14 @@ public struct InMemoryEntityStorage: EntityStorageType {
     
     inMemoryStorage.backingStore.forEach { key, value in
       if var table = backingStore[key] {
-        table.byID.merge(value.byID, uniquingKeysWith: { _, new in new })
+        var merged = table.byID
+        
+        value.byID.forEach { key, value in
+          merged[key] = value
+        }
+        
+        table.byID = merged
+        backingStore[key] = table
       } else {
         backingStore[key] = value
       }
@@ -74,7 +81,7 @@ extension InMemoryEntityStorage {
     }
     
     public func find(by id: Entity.FlatStoreID) -> Entity? {
-      storage.table(name: Entity.FlatStoreID.tableName)?.byID[id.id] as? Entity
+      storage.table(name: Entity.FlatStoreID.tableName)?.byID[id.raw] as? Entity
     }
     
   }

@@ -185,7 +185,7 @@ extension FlatStore {
   
   public func get<T: FlatStoreObjectType>(by id: FlatStoreObjectIdentifier<T>) -> T? {
     lock.lock(); defer { lock.unlock() }
-    return storage.table(name: T.FlatStoreID.tableName)?.byID[id.id] as? T
+    return storage.table(name: T.FlatStoreID.tableName)?.byID[id.raw] as? T
   }
 
   public func get<S: Sequence, T: FlatStoreObjectType>(by ids: S) -> [T] where S.Element == FlatStoreObjectIdentifier<T> {
@@ -203,15 +203,15 @@ extension FlatStore {
   @discardableResult
   public func set<T: FlatStoreObjectType>(value: T) -> T.CachingRef {
     
-    let key = value.id
+    let id = value.id
     
     lock.lock()
     storage.update(inTable: T.FlatStoreID.tableName) { (table) in
-      table.byID[key.id] = value
+      table.byID[id.raw] = value
     }
     lock.unlock()
 
-    let notification = makeSeparatedNotificationName(key.notificationName)
+    let notification = makeSeparatedNotificationName(id.notificationName)
     notificationQueue.addOperation {
       self.notificationCenter.post(name: notification, object: value)
     }
