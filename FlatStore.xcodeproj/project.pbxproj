@@ -15,7 +15,7 @@
 		4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5552196021100932155 /* FlatBatchUpdate.swift */; };
 		4B24C5592196021300932155 /* FlatRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B24C5562196021200932155 /* FlatRef.swift */; };
 		4B59A5042337E49F0088E921 /* FlatStore+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B59A5032337E49F0088E921 /* FlatStore+Identifiable.swift */; };
-		4B68395223708286002FFC5A /* InMemoryEntityStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68395123708286002FFC5A /* InMemoryEntityStorage.swift */; };
+		4B68395223708286002FFC5A /* InMemoryEntityState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68395123708286002FFC5A /* InMemoryEntityState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +40,7 @@
 		4B24C5552196021100932155 /* FlatBatchUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBatchUpdate.swift; sourceTree = "<group>"; };
 		4B24C5562196021200932155 /* FlatRef.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatRef.swift; sourceTree = "<group>"; };
 		4B59A5032337E49F0088E921 /* FlatStore+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlatStore+Identifiable.swift"; sourceTree = "<group>"; };
-		4B68395123708286002FFC5A /* InMemoryEntityStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryEntityStorage.swift; sourceTree = "<group>"; };
+		4B68395123708286002FFC5A /* InMemoryEntityState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryEntityState.swift; sourceTree = "<group>"; };
 		4BF9E4BA21A0202A006AE786 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
@@ -89,7 +89,7 @@
 				4B24C5552196021100932155 /* FlatBatchUpdate.swift */,
 				4B24C5562196021200932155 /* FlatRef.swift */,
 				4B24C5542196021100932155 /* FlatStore.swift */,
-				4B68395123708286002FFC5A /* InMemoryEntityStorage.swift */,
+				4B68395123708286002FFC5A /* InMemoryEntityState.swift */,
 				4B59A5032337E49F0088E921 /* FlatStore+Identifiable.swift */,
 				4B24C53E219600B000932155 /* Info.plist */,
 			);
@@ -216,7 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B24C5582196021300932155 /* FlatBatchUpdate.swift in Sources */,
-				4B68395223708286002FFC5A /* InMemoryEntityStorage.swift in Sources */,
+				4B68395223708286002FFC5A /* InMemoryEntityState.swift in Sources */,
 				4B24C5592196021300932155 /* FlatRef.swift in Sources */,
 				4B59A5042337E49F0088E921 /* FlatStore+Identifiable.swift in Sources */,
 				4B24C5572196021200932155 /* FlatStore.swift in Sources */,

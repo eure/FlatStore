@@ -26,7 +26,7 @@ public final class FlatBatchUpdatesContext {
 
 //  private let store: FlatStore
 
-  var buffer = InMemoryEntityStorage()
+  var buffer = InMemoryEntityState()
   
   private let store: FlatStore
 

@@ -129,9 +129,6 @@ extension FlatStoreObjectType {
   
 }
 
-public struct EntityTable {
-  public var byID: [AnyHashable : Any] = [:]
-}
 
 public protocol EntityStorageType {
   
@@ -145,9 +142,9 @@ public protocol EntityStorageType {
   
   func table(name: String) -> EntityTable?
   
-  mutating func removeAll()
+  mutating func deleteAll()
       
-  mutating func merge(inMemoryStorage: InMemoryEntityStorage)
+  mutating func merge(inMemoryStorage: InMemoryEntityState)
 }
 
 // MARK: FlatStore
@@ -168,7 +165,7 @@ open class FlatStore {
 
   private let lock = NSRecursiveLock()
 
-  public init(persistentStore: EntityStorageType = InMemoryEntityStorage()) {
+  public init(persistentStore: EntityStorageType = InMemoryEntityState()) {
     self.storage = persistentStore
     notificationQueue.maxConcurrentOperationCount = 1    
   }
@@ -244,7 +241,7 @@ extension FlatStore {
 
   public func deleteAll() {
     lock.lock(); defer { lock.unlock() }
-    storage.removeAll()
+    storage.deleteAll()
   }
   
   func dispatchUpdateNotification(name: Notification.Name, value: Any) {
